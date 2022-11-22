@@ -16,9 +16,9 @@ namespace OpenStreetMap
         int load(std::string filename);
         int save(std::string filename);
     private:
-        std::vector<std::pair<std::string, OpenStreetMap::Node*> > nodes;
-        std::vector<std::pair<std::string, OpenStreetMap::Way* > > ways;
-        std::vector<std::pair<std::string, OpenStreetMap::Relation* > >relations;
+        std::map<std::string, OpenStreetMap::Node*> nodes;
+        std::map<std::string, OpenStreetMap::Way*> ways;
+        std::map<std::string, OpenStreetMap::Relation*>relations;
         std::string version;
         std::string generator;
         std::string copyright;

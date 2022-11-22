@@ -7,3 +7,5 @@ include("${_prefix}/lib/OSMManager-@version@/OSMManager-targets.cmake")
 
 # Report other information.
 set(OSMManager_INCLUDE_DIRS "${_prefix}/include/OSMManager-@version@")
+
+file(GLOB OSMManager_LIBRARIES "${_prefix}/lib/OSMManager-@version@/lib*")

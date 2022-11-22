@@ -164,7 +164,7 @@ int Root::load(std::string filename)
             node->setTags(tags);
             xmlNode = xmlNode->NextSiblingElement("node");
 
-            nodes.push_back(std::make_pair(node->getId(), node));
+            nodes.insert(std::make_pair(node->getId(), node));
         }
 
         tinyxml2::XMLElement* xmlWay = osmRoot->FirstChildElement("way");
@@ -253,12 +253,9 @@ int Root::load(std::string filename)
                     return -16;
                 }
 
-                auto it = std::find_if(nodes.begin(), nodes.end(), [ref](std::pair<std::string, OpenStreetMap::Node*> element) {
-                    return element.first.compare(ref) == 0;
-                });
-                if(it != nodes.end())
+                if(nodes.find(ref) != nodes.end())
                 {
-                    connected.push_back(it->second);
+                    connected.push_back(nodes[ref]);
                 }
                 xmlConnected = xmlConnected->NextSiblingElement("nd");
             }
@@ -283,7 +280,7 @@ int Root::load(std::string filename)
             way->setTags(tags);
             xmlWay = xmlWay->NextSiblingElement("way");
 
-            ways.push_back(std::make_pair(way->getId(), way));
+            ways.insert(std::make_pair(way->getId(), way));
         }
 
 
@@ -394,36 +391,25 @@ int Root::load(std::string filename)
 
                 //relation->setType(type);
                 if(strcmp(type, "node") == 0)
-                {
-                    auto it = std::find_if(nodes.begin(), nodes.end(), [member_ref](std::pair<std::string, OpenStreetMap::Node*> element) {
-                        return element.first.compare(member_ref) == 0;
-                    });
-                    if(it != nodes.end())
-                        relation->addNode(std::make_pair(it->second, role));
+
+                    if(nodes.find(member_ref) != nodes.end())
+                        relation->addNode(std::make_pair(nodes[member_ref], role));
                     else
                         relation->addNode(std::make_pair(nullptr, role));
-                } else if(strcmp(type, "way") == 0)
-                {
-                    auto it = std::find_if(ways.begin(), ways.end(), [member_ref](std::pair<std::string, OpenStreetMap::Way*> element) {
-                        return element.first.compare(member_ref) == 0;
-                    });
-                    if(it != ways.end())
-                        relation->addWay(std::make_pair(it->second, role));
+                else if(strcmp(type, "way") == 0)
+                    if(ways.find(member_ref) != ways.end())
+                        relation->addWay(std::make_pair(ways[member_ref], role));
                     else
                         relation->addWay(std::make_pair(nullptr, role));
-                }else if(strcmp(type, "relation") == 0)
-                {
-                    auto it = std::find_if(relations.begin(), relations.end(), [member_ref](std::pair<std::string, OpenStreetMap::Relation*> element) {
-                        return element.first.compare(member_ref) == 0;
-                    });
-                    if(it != relations.end())
+                else if(strcmp(type, "relation") == 0)
+                    if(relations.find(member_ref) != relations.end())
                     {
-                        relation->addRelation(std::make_pair(it->second, role));
+                        relation->addRelation(std::make_pair(relations[member_ref], role));
                     } else
                     {
                         relation->addRelation(std::make_pair(nullptr, role));
                     }
-                } else
+                else
                 {
                     for(auto node : nodes)
                         delete node.second;
@@ -458,7 +444,7 @@ int Root::load(std::string filename)
             relation->setTags(tags);
             xmlRelation = xmlRelation->NextSiblingElement("relation");
 
-            relations.push_back(std::make_pair(relation->getId(), relation));
+            relations.insert(std::make_pair(relation->getId(), relation));
         }
     } else
     {
