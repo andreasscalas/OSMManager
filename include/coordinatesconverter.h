@@ -1,21 +1,24 @@
-#ifndef COORDINATESCONVERTER_H
-#define COORDINATESCONVERTER_H
+#ifndef OSM_COORDINATESCONVERTER_H
+#define OSM_COORDINATESCONVERTER_H
 
 #include <proj.h>
 
-class CoordsConverter
+namespace OpenStreetMap
 {
-public:
-    CoordsConverter(unsigned int epsg_utm);
+    class CoordsConverter
+    {
+    public:
+        CoordsConverter(unsigned int epsg_utm);
 
-    void convertToWgs84(double x_utm, double y_utm, double &lat, double &lon);
-    void convertToUTM(double lat, double lon, double &x_utm, double &y_utm);
+        void convertToWgs84(double x_utm, double y_utm, double &lat, double &lon);
+        void convertToUTM(double lat, double lon, double &x_utm, double &y_utm);
 
-private:
+    private:
 
-    PJ* P1;
-    PJ* P2;
+        PJ* P1;
+        PJ* P2;
 
 
-};
-#endif // COORDINATESCONVERTER_H
+    };
+}
+#endif // OSM_COORDINATESCONVERTER_H

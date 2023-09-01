@@ -1,7 +1,7 @@
 #include "way.h"
+#include "utils.h"
 #include <sstream>
 #include <regex>
-#include <utils.h>
 
 using namespace OpenStreetMap;
 
@@ -10,95 +10,9 @@ Way::Way()
 
 }
 
-std::string Way::getId() const
+Way::~Way()
 {
-    return id;
-}
 
-void Way::setId(const std::string &value)
-{
-    id = value;
-}
-
-std::string Way::getUserName() const
-{
-    return user_name;
-}
-
-void Way::setUserName(const std::string &value)
-{
-    user_name = value;
-}
-
-std::string Way::getUserId() const
-{
-    return user_id;
-}
-
-void Way::setUserId(const std::string &value)
-{
-    user_id = value;
-}
-
-bool Way::getIsVisible() const
-{
-    return is_visible;
-}
-
-void Way::setIsVisible(bool value)
-{
-    is_visible = value;
-}
-
-std::string Way::getVersion() const
-{
-    return version;
-}
-
-void Way::setVersion(const std::string &value)
-{
-    version = value;
-}
-
-std::string Way::getChangeset() const
-{
-    return changeset;
-}
-
-void Way::setChangeset(const std::string &value)
-{
-    changeset = value;
-}
-
-
-const std::map<std::string, std::string> &Way::getTags() const
-{
-    return tags;
-}
-
-void Way::setTags(const std::map<std::string, std::string> &newTags)
-{
-    tags = newTags;
-}
-
-
-bool Way::checkTag(std::pair<std::string, std::string> tag)
-{
-    auto iterator = tags.find(tag.first);
-    if(iterator != tags.end())
-        return tag.second.compare("") == 0 || tag.second.compare(iterator->second) == 0;
-
-    return false;
-}
-
-std::string Way::getTimestamp() const
-{
-    return timestamp;
-}
-
-void Way::setTimestamp(const std::string &value)
-{
-    timestamp = value;
 }
 
 const std::vector<Node *> &Way::getNodes() const
@@ -111,15 +25,59 @@ void Way::setNodes(const std::vector<Node *> &newNodes)
     nodes = newNodes;
 }
 
+void Way::addNode(Node * n)
+{
+    nodes.push_back(n);
+}
+
+bool Way::containsNode(const Node * n) const
+{
+    return std::find(nodes.begin(), nodes.end(), n) != nodes.end();
+}
+
+bool Way::fixRepeatedNodes()
+{
+    bool fixed = false;
+    for(uint i = 0; i < nodes.size(); i++)
+    {
+        auto tmp = nodes.at(i);
+        std::vector<Node*>::iterator it = nodes.end();
+        do {
+            if(it != nodes.end())
+            {
+                removeNode((*it)->getId());
+                fixed = true;
+            }
+            it = std::find_if(nodes.begin() + i + 1, nodes.end(), [tmp](Node* n){
+                return *tmp->getCoordinates() == *n->getCoordinates();
+            });
+
+        } while( it != nodes.end());
+    }
+
+    return fixed;
+}
+
 bool Way::removeNode(std::string id)
 {
-    for(unsigned int i = 0; i < nodes.size(); i++)
-        if(nodes.at(i)->getId().compare(id) == 0)
-        {
-            nodes.erase(nodes.begin() + i);
-            return true;
-        }
+    auto it = std::find_if(nodes.begin(), nodes.end(), [id](Node* n){ return n->getId().compare(id) == 0; });
+    if(it != nodes.end())
+    {
+        nodes.erase(it);
+        return true;
+    }
     return false;
+}
+
+void Way::print(std::ostream &stream)
+{
+
+    Object::print(stream);
+    stream << "Nodes:" << std::endl;
+    stream << "[" << std::endl;
+    for(auto n : nodes)
+        stream << "\t" << n->getId() << std::endl;
+    stream << "]" << std::endl;
 }
 
 std::string Way::toXML()

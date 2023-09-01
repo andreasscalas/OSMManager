@@ -41,17 +41,17 @@ int Root::load(std::string filename)
             return 3;
         generator = tmpGenerator;
         auto tmpCopyright = osmRoot->Attribute("copyright");
-        if(tmpCopyright == nullptr)
-            return 4;
-        copyright = tmpCopyright;
+        if(tmpCopyright != nullptr)
+            //return 4;
+            copyright = tmpCopyright;
         auto tmpAttribution =  osmRoot->Attribute("attribution");
-        if(tmpAttribution == nullptr)
-            return 5;
-        attribution = tmpAttribution;
+        if(tmpAttribution != nullptr)
+            //return 5;
+            attribution = tmpAttribution;
         auto tmpLicense =  osmRoot->Attribute("license");
-        if(tmpLicense == nullptr)
-            return 6;
-        license = tmpLicense;
+        if(tmpLicense != nullptr)
+            //return 6;
+            license = tmpLicense;
         tinyxml2::XMLElement* xmlBounds = osmRoot->FirstChildElement("bounds");
         if(xmlBounds == nullptr)
             return 7;
@@ -115,37 +115,29 @@ int Root::load(std::string filename)
             node->setCoordinates(coordinates);
 
             const char* isVisible = xmlNode->Attribute("visible");
-            if(isVisible == nullptr)
+            if(isVisible != nullptr)
             {
-                delete node;
-                return -5;
+                node->setVisible(strcmp(isVisible, "true") == 0);
             }
-            node->setVisible(strcmp(isVisible, "true") == 0);
 
             const char* version = xmlNode->Attribute("version");
-            if(version == nullptr)
+            if(version != nullptr)
             {
-                delete node;
-                return -6;
+                node->setVersion(version);
             }
-            node->setVersion(version);
 
             const char* changeset = xmlNode->Attribute("changeset");
-            if(changeset == nullptr)
+            if(changeset != nullptr)
             {
-                delete node;
-                return -7;
+                node->setChangeset(changeset);
             }
-            node->setChangeset(changeset);
 
 
             const char* timestamp = xmlNode->Attribute("timestamp");
-            if(timestamp == nullptr)
+            if(timestamp != nullptr)
             {
-                delete node;
-                return -8;
+                node->setTimestamp(timestamp);
             }
-            node->setTimestamp(timestamp);
 
             tinyxml2::XMLElement* xmlTag = xmlNode->FirstChildElement("tag");
             while(xmlTag != nullptr){
@@ -203,44 +195,28 @@ int Root::load(std::string filename)
             way->setUserId(userId);
 
             const char* isVisible = xmlWay->Attribute("visible");
-            if(isVisible == nullptr)
+            if(isVisible != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                delete way;
-                return -12;
+                way->setVisible(strcmp(isVisible, "true") == 0);
             }
-            way->setIsVisible(strcmp(isVisible, "true") == 0);
 
             const char* version = xmlWay->Attribute("version");
-            if(version == nullptr)
+            if(version != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                delete way;
-                return -13;
+                way->setVersion(version);
             }
-            way->setVersion(version);
 
             const char* changeset = xmlWay->Attribute("changeset");
-            if(changeset == nullptr)
+            if(changeset != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                delete way;
-                return -14;
+                way->setChangeset(changeset);
             }
-            way->setChangeset(changeset);
 
             const char* timestamp = xmlWay->Attribute("timestamp");
-            if(timestamp == nullptr)
+            if(timestamp != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                delete way;
-                return -15;
+                way->setTimestamp(timestamp);
             }
-            way->setTimestamp(timestamp);
 
             tinyxml2::XMLElement* xmlConnected = xmlWay->FirstChildElement("nd");
             while(xmlConnected != nullptr){
@@ -326,52 +302,28 @@ int Root::load(std::string filename)
             relation->setUserId(userId);
 
             const char* isVisible = xmlRelation->Attribute("visible");
-            if(isVisible == nullptr)
+            if(isVisible != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                for(auto way : ways)
-                    delete way.second;
-                delete relation;
-                return -21;
+                relation->setVisible(strcmp(isVisible, "true") == 0);
             }
-            relation->setIsVisible(strcmp(isVisible, "true") == 0);
 
             const char* version = xmlRelation->Attribute("version");
-            if(version == nullptr)
+            if(version != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                for(auto way : ways)
-                    delete way.second;
-                delete relation;
-                return -22;
+                relation->setVersion(version);
             }
-            relation->setVersion(version);
 
             const char* changeset = xmlRelation->Attribute("changeset");
-            if(changeset == nullptr)
+            if(changeset != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                for(auto way : ways)
-                    delete way.second;
-                delete relation;
-                return -23;
+                relation->setChangeset(changeset);
             }
-            relation->setChangeset(changeset);
 
             const char* timestamp = xmlRelation->Attribute("timestamp");
-            if(timestamp == nullptr)
+            if(timestamp != nullptr)
             {
-                for(auto node : nodes)
-                    delete node.second;
-                for(auto way : ways)
-                    delete way.second;
-                delete relation;
-                return -24;
+                relation->setTimestamp(timestamp);
             }
-            relation->setTimestamp(timestamp);
 
             tinyxml2::XMLElement* xmlConnected = xmlRelation->FirstChildElement("member");
             while(xmlConnected != nullptr){
@@ -472,4 +424,230 @@ int Root::save(std::string filename)
     } else
         return 1;
     return 0;
+}
+
+const std::map<std::string, OpenStreetMap::Node *> &Root::getNodes() const
+{
+    return nodes;
+}
+
+Node *Root::getNode(std::string s)
+{
+    auto it = nodes.find(s);
+    if(it != nodes.end())
+        return it->second;
+    else
+        return nullptr;
+}
+
+void Root::addNode(Node *n)
+{
+    nodes.insert(std::make_pair(n->getId(), n));
+}
+
+std::map<std::string, Node*>::iterator Root::removeNode(std::string id)
+{
+    auto it = nodes.find(id);
+    if(it != nodes.end())
+    {
+        auto referredWays = getWays(it->second);
+        for(auto w : referredWays)
+            removeWay(w->getId());
+        auto referredRelations = getRelations(it->second);
+        for(auto r : referredRelations)
+            removeWay(r->getId());
+        delete it->second;
+        return nodes.erase(it);
+    }else
+        return nodes.end();
+}
+
+
+const std::map<std::string, OpenStreetMap::Way *> &Root::getWays() const
+{
+    return ways;
+}
+
+std::vector<Way *> Root::getWays(Node *n) const
+{
+    std::vector<Way *> retList;
+
+    for(auto it = ways.begin(); it != ways.end(); it++)
+    {
+        auto nit = std::find(it->second->getNodes().begin(), it->second->getNodes().end(), n);
+        if(nit != it->second->getNodes().end())
+            retList.push_back(it->second);
+    }
+
+    return retList;
+}
+
+Way *Root::getWay(std::string s)
+{
+    auto it = ways.find(s);
+    if(it != ways.end())
+        return it->second;
+    else
+        return nullptr;
+}
+
+void Root::addWay(Way *w)
+{
+    ways.insert(std::make_pair(w->getId(), w));
+}
+
+
+std::map<std::string, Way*>::iterator Root::removeWay(std::string id)
+{
+    auto it = ways.find(id);
+    if(it != ways.end())
+    {
+        auto referreRelations = getRelations(it->second);
+        for(auto r : referreRelations)
+            removeRelation(r->getId());
+        delete it->second;
+        return ways.erase(it);
+
+    } else
+        return ways.end();
+}
+
+const std::map<std::string, OpenStreetMap::Relation *> &Root::getRelations() const
+{
+    return relations;
+}
+
+std::vector<Relation *> Root::getRelations(Node *n) const
+{
+    std::vector<Relation *> retList;
+
+    for(auto it = relations.begin(); it != relations.end(); it++)
+        if(it->second->containsNode(n))
+            retList.push_back(it->second);
+
+    return retList;
+}
+
+std::vector<Relation *> Root::getRelations(Way *w) const
+{
+    std::vector<Relation *> retList;
+
+    for(auto it = relations.begin(); it != relations.end(); it++)
+    {
+        if(it->second->containsWay(w))
+            retList.push_back(it->second);
+    }
+
+    return retList;
+}
+
+std::vector<Relation *> Root::getRelations(Relation *r) const
+{
+    std::vector<Relation *> retList;
+
+    for(auto it = relations.begin(); it != relations.end(); it++)
+        if(it->second->containsRelation(r))
+            retList.push_back(it->second);
+
+    return retList;
+}
+
+Relation *Root::getRelation(std::string s)
+{
+    auto it = relations.find(s);
+    if(it != relations.end())
+        return it->second;
+    else
+        return nullptr;
+}
+
+void Root::addRelation(Relation *r)
+{
+    relations.insert(std::make_pair(r->getId(), r));
+}
+
+std::map<std::string, Relation*>::iterator Root::removeRelation(std::string id)
+{
+    auto it = relations.find(id);
+    if(it != relations.end())
+    {
+        auto referreRelations = getRelations(it->second);
+        for(auto r : referreRelations)
+            removeRelation(r->getId());
+        it = relations.find(id);
+        return relations.erase(it);
+        delete it->second;
+    } else
+        return relations.end();
+}
+
+
+const std::string &Root::getVersion() const
+{
+    return version;
+}
+
+const std::string &Root::getGenerator() const
+{
+    return generator;
+}
+
+const std::string &Root::getCopyright() const
+{
+    return copyright;
+}
+
+const std::string &Root::getAttribution() const
+{
+    return attribution;
+}
+
+const std::string &Root::getLicense() const
+{
+    return license;
+}
+
+Point Root::getMin() const
+{
+    return min;
+}
+
+Point Root::getMax() const
+{
+    return max;
+}
+
+void Root::setVersion(const std::string &newVersion)
+{
+    version = newVersion;
+}
+
+void Root::setGenerator(const std::string &newGenerator)
+{
+    generator = newGenerator;
+}
+
+void Root::setCopyright(const std::string &newCopyright)
+{
+    copyright = newCopyright;
+}
+
+void Root::setAttribution(const std::string &newAttribution)
+{
+    attribution = newAttribution;
+}
+
+void Root::setLicense(const std::string &newLicense)
+{
+    license = newLicense;
+}
+
+void Root::setMin(Point newMin)
+{
+    min = newMin;
+}
+
+void Root::setMax(Point newMax)
+{
+    max = newMax;
 }

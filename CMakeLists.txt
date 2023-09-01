@@ -9,10 +9,6 @@ set(OSMManager_H ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(OSMManager_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 find_path(RapidJSON_INCLUDE_DIRS rapidjson)
 find_package(PROJ)
-find_package(tinyxml2)
-find_path(tinyxml2_INCLUDE_DIRS tinyxml2)
-find_path(tinyxml2_LIBRARIES tinyxml2)
-
 
 set(HDRS
     ${OSMManager_H}/root.h
@@ -22,6 +18,8 @@ set(HDRS
     ${OSMManager_H}/coordinatesconverter.h
     ${OSMManager_H}/utils.h
     ${OSMManager_H}/types.h
+    ${OSMManager_H}/tinyxml2.h
+    ${OSMManager_H}/object.h
 )
 set(SRCS
     ${OSMManager_SRC}/root.cpp
@@ -29,18 +27,19 @@ set(SRCS
     ${OSMManager_SRC}/way.cpp
     ${OSMManager_SRC}/relation.cpp
     ${OSMManager_SRC}/coordinatesconverter.cpp
-
+    ${OSMManager_SRC}/tinyxml2.cpp
+    ${OSMManager_SRC}/object.cpp
 )
 
 add_library(OSMManager ${HDRS} ${SRCS})
-target_include_directories(OSMManager PUBLIC $<BUILD_INTERFACE:${OSMManager_H}/> ${RapidJSON_INCLUDE_DIRS} ${PROJ_INCLUDE_DIRS} ${tinyxml2_INCLUDE_DIRS})
-target_link_libraries(OSMManager ${PROJ_LIBRARIES} ${tinyxml2_LIBRARIES})
+target_include_directories(OSMManager PUBLIC $<BUILD_INTERFACE:${OSMManager_H}/> ${RapidJSON_INCLUDE_DIRS} ${PROJ_INCLUDE_DIRS})
+target_link_libraries(OSMManager ${PROJ_LIBRARIES})
 
 add_executable(OSMManager_Test ${HDRS} ${SRCS} ${OSMManager_SRC}/main.cpp)
-target_include_directories(OSMManager_Test PUBLIC $<BUILD_INTERFACE:${OSMManager_H}/> ${RapidJSON_INCLUDE_DIRS} ${PROJ_INCLUDE_DIRS} ${tinyxml2_INCLUDE_DIRS})
-target_link_libraries(OSMManager_Test ${PROJ_LIBRARIES} ${tinyxml2_LIBRARIES})
+target_include_directories(OSMManager_Test PUBLIC $<BUILD_INTERFACE:${OSMManager_H}/> ${RapidJSON_INCLUDE_DIRS} ${PROJ_INCLUDE_DIRS})
+target_link_libraries(OSMManager_Test ${PROJ_LIBRARIES})
 
-install(FILES  ${HDRS}  DESTINATION include/OSMManager-${version})
+install(FILES ${HDRS} DESTINATION include/OSMManager-${version})
 install(TARGETS OSMManager
         DESTINATION lib/OSMManager-${version}
         EXPORT OSMManager-targets)

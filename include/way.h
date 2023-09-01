@@ -1,58 +1,31 @@
-#ifndef OSMWAY_H
-#define OSMWAY_H
+#ifndef OSM_WAY_H
+#define OSM_WAY_H
 
-#include <node.h>
+#include "node.h"
+#include "object.h"
 #include <memory>
 #include <vector>
 
 namespace OpenStreetMap
 {
-    class Way
+    class Way : public Object
     {
     public:
         Way();
-        std::string getId() const;
-        void setId(const std::string &value);
-
+        ~Way();
         bool removeNode(std::string id);
         const std::vector<Node *> &getNodes() const;
         void setNodes(const std::vector<Node *> &newNodes);
+        void addNode(Node *);
+        bool containsNode(const Node*) const;
+        bool fixRepeatedNodes();
 
-        std::string getUserName() const;
-        void setUserName(const std::string &value);
-
-        std::string getUserId() const;
-        void setUserId(const std::string &value);
-
-        bool getIsVisible() const;
-        void setIsVisible(bool value);
-
-        std::string getVersion() const;
-        void setVersion(const std::string &value);
-
-        std::string getChangeset() const;
-        void setChangeset(const std::string &value);
-
-        bool checkTag(std::pair<std::string, std::string> tag);
-        const std::map<std::string, std::string> &getTags() const;
-        void setTags(const std::map<std::string, std::string> &newTags);
-
-        std::string getTimestamp() const;
-        void setTimestamp(const std::string &value);
-
-        std::string toXML();
+        virtual void print(std::ostream &stream) override;
+        virtual std::string toXML() override;
 
     private:
-        std::string id;
         std::vector<Node*> nodes;
-        std::string user_name;
-        std::string user_id;
-        bool is_visible;
-        std::string version;
-        std::string changeset;
-        std::string timestamp;
-        std::map<std::string, std::string> tags; //Array of pairs <key, value>
 
     };
 }
-#endif // OSMWAY_H
+#endif // OSM_WAY_H

@@ -1,5 +1,5 @@
-#ifndef OSMUTILS_H
-#define OSMUTILS_H
+#ifndef OSM_UTILS_H
+#define OSM_UTILS_H
 #include <string>
 #include <map>
 #include <fstream>
@@ -15,4 +15,4 @@ namespace OpenStreetMap {
 
     }
 }
-#endif // OSMUTILS_H
+#endif // OSM_UTILS_H

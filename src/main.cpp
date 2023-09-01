@@ -1,6 +1,7 @@
 #include <iostream>
 #include <utils.h>
 #include <root.h>
+
 int main(int argc, char* argv[])
 {
     if(argc < 2)
@@ -23,11 +24,19 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    int retValue1 = map.save(outputFileName);
-    if(retValue1 != 0)
+    auto relations = map.getRelation("4541865");
+    std::cout.precision(15);
+    for(auto w : relations->getWays())
     {
-        std::cerr << "Error saving the output file" << std::endl;
-        return 2;
+        std::cout << w.first->getId() << std::endl;
+        for(auto n : w.first->getNodes())
+        {
+            std::cout << n->getCoordinates()->x << " " << n->getCoordinates()->y << std::endl;
+        }
+        std::cout << std::endl;
+
     }
+
+
 	return 0;
 }

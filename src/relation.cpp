@@ -1,8 +1,8 @@
 #include "relation.h"
+#include "utils.h"
 #include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <utils.h>
 using namespace OpenStreetMap;
 
 Relation::Relation()
@@ -20,85 +20,6 @@ void Relation::setId(const std::string &value)
     id = value;
 }
 
-std::string Relation::getUserName() const
-{
-    return user_name;
-}
-
-void Relation::setUserName(const std::string &value)
-{
-    user_name = value;
-}
-
-std::string Relation::getUserId() const
-{
-    return user_id;
-}
-
-void Relation::setUserId(const std::string &value)
-{
-    user_id = value;
-}
-
-bool Relation::getIsVisible() const
-{
-    return is_visible;
-}
-
-void Relation::setIsVisible(bool value)
-{
-    is_visible = value;
-}
-
-std::string Relation::getVersion() const
-{
-    return version;
-}
-
-void Relation::setVersion(const std::string &value)
-{
-    version = value;
-}
-
-std::string Relation::getChangeset() const
-{
-    return changeset;
-}
-
-void Relation::setChangeset(const std::string &value)
-{
-    changeset = value;
-}
-
-
-bool Relation::checkTag(std::pair<std::string, std::string> tag)
-{
-    auto iterator = tags.find(tag.first);
-    if(iterator != tags.end())
-        return tag.second.compare("") == 0 || tag.second.compare(iterator->second) == 0;
-
-    return false;
-}
-
-std::string Relation::getTimestamp() const
-{
-    return timestamp;
-}
-
-void Relation::setTimestamp(const std::string &value)
-{
-    timestamp = value;
-}
-
-const std::map<std::string, std::string> &Relation::getTags() const
-{
-    return tags;
-}
-
-void Relation::setTags(const std::map<std::string, std::string> &newTags)
-{
-    tags = newTags;
-}
 
 const std::map<Relation *, std::string> &Relation::getRelations() const
 {
@@ -139,6 +60,16 @@ bool Relation::removeRelation(std::string osmid)
     return false;
 }
 
+bool Relation::containsRelation(Relation *r)
+{
+    bool found = relations.find(r) != relations.end();
+    if(!found)
+        for(auto r_ : relations)
+            if(r_.first != nullptr)
+                r_.first->containsRelation(r);
+    return found;
+}
+
 const std::map<Node *, std::string> &Relation::getNodes() const
 {
     return nodes;
@@ -173,6 +104,29 @@ bool Relation::removeNode(std::string osmid)
     return false;
 }
 
+bool Relation::containsNode(Node *n) const
+{
+    bool found = nodes.find(n) != nodes.end();
+    if(!found)
+        for(auto w : ways)
+            if(w.first != nullptr)
+            {
+                found = w.first->containsNode(n);
+                if(found)
+                    break;
+            }
+    if(!found)
+        for(auto r : relations)
+            if(r.first != nullptr)
+            {
+                found = r.first->containsNode(n);
+                if(found)
+                    break;
+            }
+    return found;
+
+}
+
 const std::map<Way *, std::string> &Relation::getWays() const
 {
     return ways;
@@ -204,6 +158,41 @@ bool Relation::removeWay(std::string osmid)
         return true;
     }
     return false;
+}
+
+bool Relation::containsWay(Way *w) const
+{
+    bool found = ways.find(w) != ways.end();
+    if(!found)
+        for(auto r : relations)
+            if(r.first != nullptr){
+                found = r.first->containsWay(w);
+                if(found)
+                    break;
+            }
+    return found;
+}
+
+
+void Relation::print(std::ostream &stream)
+{
+    Object::print(stream);
+    stream << "]" << std::endl;
+    stream << "Nodes:" << std::endl;
+    stream << "[" << std::endl;
+    for(auto n : nodes)
+        stream << "\t" << n.first->getId() << std::endl;
+    stream << "]" << std::endl;
+    stream << "Ways:" << std::endl;
+    stream << "[" << std::endl;
+    for(auto w : ways)
+        stream << "\t" << w.first->getId() << std::endl;
+    stream << "]"<< std::endl;
+    stream << "Relations:" << std::endl;
+    stream << "[" << std::endl;
+    for(auto r : relations)
+        stream << "\t" << r.first->getId() << std::endl;
+    stream << "]"<< std::endl;
 }
 
 std::string Relation::toXML()

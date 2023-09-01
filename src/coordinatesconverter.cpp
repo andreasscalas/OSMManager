@@ -1,6 +1,8 @@
 #include "coordinatesconverter.h"
 #include <string>
 
+using namespace OpenStreetMap;
+
 CoordsConverter::CoordsConverter(unsigned int epsg_utm)
 {
 
