@@ -24,18 +24,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    auto relations = map.getRelation("4541865");
-    std::cout.precision(15);
-    for(auto w : relations->getWays())
-    {
-        std::cout << w.first->getId() << std::endl;
-        for(auto n : w.first->getNodes())
-        {
-            std::cout << n->getCoordinates()->x << " " << n->getCoordinates()->y << std::endl;
-        }
-        std::cout << std::endl;
-
-    }
+    map.save(outputFileName);
 
 
 	return 0;

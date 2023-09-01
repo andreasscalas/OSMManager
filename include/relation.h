@@ -11,6 +11,7 @@ namespace OpenStreetMap
     {
     public:
         Relation();
+        virtual ~Relation();
 
         std::string getId() const;
         void setId(const std::string &value);

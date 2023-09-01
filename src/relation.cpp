@@ -10,6 +10,11 @@ Relation::Relation()
 
 }
 
+Relation::~Relation()
+{
+
+}
+
 std::string Relation::getId() const
 {
     return id;

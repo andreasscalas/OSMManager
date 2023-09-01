@@ -12,7 +12,7 @@ namespace OpenStreetMap
     {
     public:
         Node();
-        ~Node();
+        virtual ~Node();
 
         Point *getCoordinates() const;
         void setCoordinates(double x, double y);

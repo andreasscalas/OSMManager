@@ -12,7 +12,7 @@ namespace OpenStreetMap
     {
     public:
         Way();
-        ~Way();
+        virtual ~Way();
         bool removeNode(std::string id);
         const std::vector<Node *> &getNodes() const;
         void setNodes(const std::vector<Node *> &newNodes);

@@ -22,6 +22,7 @@ namespace OpenStreetMap
         int save(std::string filename);
 
         const std::map<std::string, Node *> &getNodes() const;
+        const std::vector<Node *> getNodes(std::string key, std::string value = "") const;
         Node* getNode(std::string);
         void addNode(Node *);
         std::map<std::string, Node*>::iterator removeNode(std::string id);
@@ -31,11 +32,13 @@ namespace OpenStreetMap
         Way* getWay(std::string);
         void addWay(Way *);
         std::map<std::string, Way*>::iterator removeWay(std::string id);
+        std::vector<Way *> getWays(std::string key, std::string value = "") const;
 
         const std::map<std::string, Relation *> &getRelations() const;
         std::vector<Relation *> getRelations(Node *n) const;
         std::vector<Relation *> getRelations(Way *w) const;
         std::vector<Relation *> getRelations(Relation *r) const;
+        std::vector<Relation *> getRelations(std::string key, std::string value = "") const;
         Relation* getRelation(std::string);
 
         void addRelation(Relation *);

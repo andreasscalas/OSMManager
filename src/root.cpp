@@ -431,6 +431,19 @@ const std::map<std::string, OpenStreetMap::Node *> &Root::getNodes() const
     return nodes;
 }
 
+const std::vector<Node *> Root::getNodes(std::string key, std::string value) const
+{
+    std::vector<Node *> retList;
+
+    for(auto it = nodes.begin(); it != nodes.end(); it++)
+    {
+        if(it->second->checkTag(std::make_pair(key, value)))
+            retList.push_back(it->second);
+    }
+
+    return retList;
+}
+
 Node *Root::getNode(std::string s)
 {
     auto it = nodes.find(s);
@@ -512,6 +525,19 @@ std::map<std::string, Way*>::iterator Root::removeWay(std::string id)
         return ways.end();
 }
 
+std::vector<Way *> Root::getWays(std::string key, std::string value) const
+{
+    std::vector<Way *> retList;
+
+    for(auto it = ways.begin(); it != ways.end(); it++)
+    {
+        if(it->second->checkTag(std::make_pair(key, value)))
+            retList.push_back(it->second);
+    }
+
+    return retList;
+}
+
 const std::map<std::string, OpenStreetMap::Relation *> &Root::getRelations() const
 {
     return relations;
@@ -548,6 +574,19 @@ std::vector<Relation *> Root::getRelations(Relation *r) const
     for(auto it = relations.begin(); it != relations.end(); it++)
         if(it->second->containsRelation(r))
             retList.push_back(it->second);
+
+    return retList;
+}
+
+std::vector<Relation *> Root::getRelations(std::string key, std::string value) const
+{
+    std::vector<Relation *> retList;
+
+    for(auto it = relations.begin(); it != relations.end(); it++)
+    {
+        if(it->second->checkTag(std::make_pair(key, value)))
+            retList.push_back(it->second);
+    }
 
     return retList;
 }
