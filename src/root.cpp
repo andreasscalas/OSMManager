@@ -11,13 +11,13 @@ Root::Root()
 
 Root::~Root()
 {
-    for(auto node : nodes)
+    for(auto &node : nodes)
         delete node.second;
     nodes.clear();
-    for(auto way : ways)
+    for(auto &way : ways)
         delete way.second;
     ways.clear();
-    for(auto relation : relations)
+    for(auto &relation : relations)
         delete relation.second;
     relations.clear();
 }
@@ -169,7 +169,7 @@ int Root::load(std::string filename)
             const char* id = xmlWay->Attribute("id");
             if(id == nullptr)
             {
-                for(auto node : nodes)
+                for(auto &node : nodes)
                     delete node.second;
                 delete way;
                 return -9;
@@ -178,7 +178,7 @@ int Root::load(std::string filename)
             const char* userName = xmlWay->Attribute("user");
             if(userName == nullptr)
             {
-                for(auto node : nodes)
+                for(auto &node : nodes)
                     delete node.second;
                 delete way;
                 return -10;
@@ -187,7 +187,7 @@ int Root::load(std::string filename)
             const char* userId = xmlWay->Attribute("uid");
             if(userId == nullptr)
             {
-                for(auto node : nodes)
+                for(auto &node : nodes)
                     delete node.second;
                 delete way;
                 return -11;
@@ -223,7 +223,7 @@ int Root::load(std::string filename)
                 const char* ref = xmlConnected->Attribute("ref");
                 if(ref == nullptr)
                 {
-                    for(auto node : nodes)
+                    for(auto &node : nodes)
                         delete node.second;
                     delete way;
                     return -16;
@@ -243,7 +243,7 @@ int Root::load(std::string filename)
                 const char* value = xmlTag->Attribute("v");
                 if(key == nullptr || value == nullptr)
                 {
-                    for(auto node : nodes)
+                    for(auto &node : nodes)
                         delete node.second;
                     delete way;
                     return -17;
@@ -269,9 +269,9 @@ int Root::load(std::string filename)
             const char* id = xmlRelation->Attribute("id");
             if(id == nullptr)
             {
-                for(auto node : nodes)
+                for(auto &node : nodes)
                     delete node.second;
-                for(auto way : ways)
+                for(auto &way : ways)
                     delete way.second;
                 delete relation;
                 return -18;
@@ -281,9 +281,9 @@ int Root::load(std::string filename)
             const char* userName = xmlRelation->Attribute("user");
             if(userName == nullptr)
             {
-                for(auto node : nodes)
+                for(auto &node : nodes)
                     delete node.second;
-                for(auto way : ways)
+                for(auto &way : ways)
                     delete way.second;
                 delete relation;
                 return -19;
@@ -292,9 +292,9 @@ int Root::load(std::string filename)
             const char* userId = xmlRelation->Attribute("uid");
             if(userId == nullptr)
             {
-                for(auto node : nodes)
+                for(auto &node : nodes)
                     delete node.second;
-                for(auto way : ways)
+                for(auto &way : ways)
                     delete way.second;
                 delete relation;
                 return -20;
@@ -332,9 +332,9 @@ int Root::load(std::string filename)
                 const char* role_pointer = xmlConnected->Attribute("role");
                 if(type == nullptr || member_ref == nullptr || role_pointer == nullptr)
                 {
-                    for(auto node : nodes)
+                    for(auto &node : nodes)
                         delete node.second;
-                    for(auto way : ways)
+                    for(auto &way : ways)
                         delete way.second;
                     delete relation;
                     return -25;
@@ -363,9 +363,9 @@ int Root::load(std::string filename)
                     }
                 else
                 {
-                    for(auto node : nodes)
+                    for(auto &node : nodes)
                         delete node.second;
-                    for(auto way : ways)
+                    for(auto &way : ways)
                         delete way.second;
                     delete relation;
                     return -26;
@@ -381,9 +381,9 @@ int Root::load(std::string filename)
                 const char* value = xmlTag->Attribute("v");
                 if(key == nullptr || value == nullptr)
                 {
-                    for(auto node : nodes)
+                    for(auto &node : nodes)
                         delete node.second;
-                    for(auto way : ways)
+                    for(auto &way : ways)
                         delete way.second;
                     delete relation;
                     return -27;
@@ -414,11 +414,11 @@ int Root::save(std::string filename)
         ofs << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
         ofs << "<osm version=\"" << version << "\" generator=\"" << generator << "\" copyright=\"" << copyright << "\" attribution=\"" << attribution << "\" license=\"" << license << "\" >" << std::endl;
         ofs << "\t<bounds minlat=\"" << min.x << "\" minlon=\"" << min.y << "\" maxlat=\"" << max.x << "\" maxlon=\"" << max.y << "\" />" << std::endl;
-        for(auto node : nodes)
+        for(const auto &node : nodes)
             ofs << node.second->toXML();
-        for(auto way : ways)
+        for(const auto& way : ways)
             ofs << way.second->toXML();
-        for(auto relation : relations)
+        for(const auto& relation : relations)
             ofs << relation.second->toXML();
         ofs << "</osm>";
     } else
@@ -464,10 +464,10 @@ std::map<std::string, Node*>::iterator Root::removeNode(std::string id)
     if(it != nodes.end())
     {
         auto referredWays = getWays(it->second);
-        for(auto w : referredWays)
+        for(const auto& w : referredWays)
             removeWay(w->getId());
         auto referredRelations = getRelations(it->second);
-        for(auto r : referredRelations)
+        for(const auto& r : referredRelations)
             removeWay(r->getId());
         delete it->second;
         return nodes.erase(it);
@@ -485,11 +485,11 @@ std::vector<Way *> Root::getWays(Node *n) const
 {
     std::vector<Way *> retList;
 
-    for(auto it = ways.begin(); it != ways.end(); it++)
+    for(const auto& w : ways)
     {
-        auto nit = std::find(it->second->getNodes().begin(), it->second->getNodes().end(), n);
-        if(nit != it->second->getNodes().end())
-            retList.push_back(it->second);
+        auto nit = std::find(w.second->getNodes().begin(), w.second->getNodes().end(), n);
+        if(nit != w.second->getNodes().end())
+            retList.push_back(w.second);
     }
 
     return retList;
@@ -516,7 +516,7 @@ std::map<std::string, Way*>::iterator Root::removeWay(std::string id)
     if(it != ways.end())
     {
         auto referreRelations = getRelations(it->second);
-        for(auto r : referreRelations)
+        for(const auto& r : referreRelations)
             removeRelation(r->getId());
         delete it->second;
         return ways.erase(it);
@@ -529,10 +529,10 @@ std::vector<Way *> Root::getWays(std::string key, std::string value) const
 {
     std::vector<Way *> retList;
 
-    for(auto it = ways.begin(); it != ways.end(); it++)
+    for(const auto& w : ways)
     {
-        if(it->second->checkTag(std::make_pair(key, value)))
-            retList.push_back(it->second);
+        if(w.second->checkTag(std::make_pair(key, value)))
+            retList.push_back(w.second);
     }
 
     return retList;
@@ -547,9 +547,9 @@ std::vector<Relation *> Root::getRelations(Node *n) const
 {
     std::vector<Relation *> retList;
 
-    for(auto it = relations.begin(); it != relations.end(); it++)
-        if(it->second->containsNode(n))
-            retList.push_back(it->second);
+    for(const auto& r : relations)
+        if(r.second->containsNode(n))
+            retList.push_back(r.second);
 
     return retList;
 }
@@ -558,22 +558,20 @@ std::vector<Relation *> Root::getRelations(Way *w) const
 {
     std::vector<Relation *> retList;
 
-    for(auto it = relations.begin(); it != relations.end(); it++)
-    {
-        if(it->second->containsWay(w))
-            retList.push_back(it->second);
-    }
+    for(const auto& r : relations)
+        if(r.second->containsWay(w))
+            retList.push_back(r.second);
 
     return retList;
 }
 
-std::vector<Relation *> Root::getRelations(Relation *r) const
+std::vector<Relation *> Root::getRelations(Relation *relation) const
 {
     std::vector<Relation *> retList;
 
-    for(auto it = relations.begin(); it != relations.end(); it++)
-        if(it->second->containsRelation(r))
-            retList.push_back(it->second);
+    for(const auto& r : relations)
+        if(r.second->containsRelation(relation))
+            retList.push_back(r.second);
 
     return retList;
 }
@@ -582,10 +580,10 @@ std::vector<Relation *> Root::getRelations(std::string key, std::string value) c
 {
     std::vector<Relation *> retList;
 
-    for(auto it = relations.begin(); it != relations.end(); it++)
+    for(const auto& r : relations)
     {
-        if(it->second->checkTag(std::make_pair(key, value)))
-            retList.push_back(it->second);
+        if(r.second->checkTag(std::make_pair(key, value)))
+            retList.push_back(r.second);
     }
 
     return retList;
@@ -611,13 +609,14 @@ std::map<std::string, Relation*>::iterator Root::removeRelation(std::string id)
     if(it != relations.end())
     {
         auto referreRelations = getRelations(it->second);
-        for(auto r : referreRelations)
+        for(const auto& r : referreRelations)
             removeRelation(r->getId());
         it = relations.find(id);
-        return relations.erase(it);
         delete it->second;
-    } else
-        return relations.end();
+        return relations.erase(it);
+    }
+
+    return relations.end();
 }
 
 

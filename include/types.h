@@ -11,46 +11,57 @@ namespace OpenStreetMap {
         {
         }
 
+        ~Point()
+        {
+
+        }
+
+        Point(const Point& other)
+        {
+            this->x = other.x;
+            this->y = other.y;
+        }
+
         Point(double x, double y)
         {
             this->x = x;
             this->y = y;
         }
 
-        inline bool operator==(const Point p) const
+        inline bool operator==(const Point& p) const
         {
             return p.x < x + EPSILON && p.x > x - EPSILON &&
                    p.y < y + EPSILON && p.y > y - EPSILON;
         }
 
-        inline bool operator!=(const Point other) const
+        inline bool operator!=(const Point& other) const
         {
             return !(*this==other);
         }
 
-        inline Point operator+(const Point other) const
+        inline Point operator+(const Point& other) const
         {
             return Point(x + other.x, y + other.y);
         }
 
-        inline void operator+=(const Point other)
+        inline void operator+=(const Point& other)
         {
             this->x = x + other.x;
             this->y = y + other.y;
         }
 
-        inline Point operator-(const Point other) const
+        inline Point operator-(const Point& other) const
         {
             return Point(x - other.x, y - other.y);
         }
 
-        inline void operator-=(const Point other)
+        inline void operator-=(const Point& other)
         {
             this->x = x - other.x;
             this->y = y - other.y;
         }
 
-        inline double operator*(const Point other) const
+        inline double operator*(const Point& other) const
         {
             return x * other.x + y * other.y;
         }
@@ -77,7 +88,7 @@ namespace OpenStreetMap {
             y = y / val;
         }
 
-        inline void operator=(const Point other)
+        inline void operator=(const Point& other)
         {
             this->x = other.x;
             this->y = other.y;
