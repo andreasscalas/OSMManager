@@ -11,7 +11,7 @@ namespace OpenStreetMap
     {
     public:
         Relation();
-        virtual ~Relation();
+        virtual ~Relation() override;
 
         std::string getId() const;
         void setId(const std::string &value);
@@ -19,26 +19,26 @@ namespace OpenStreetMap
         const std::map<Node *, std::string> &getNodes() const;
         void setNodes(const std::map<Node *, std::string> &newNodes);
         bool addNode(const std::pair<Node*, std::string> node);
-        bool removeNode(Node*);
-        bool removeNode(std::string osmid);
-        bool containsNode(Node * n) const;
+        bool removeNode(const Node*);
+        bool removeNode(const std::string osmid);
+        bool containsNode(const Node * n) const;
 
         const std::map<Way *, std::string> &getWays() const;
         void setWays(const std::map<Way *, std::string> &newWays);
         bool addWay(const std::pair<Way*, std::string> way);
-        bool removeWay(Way*);
-        bool removeWay(std::string osmid);
-        bool containsWay(Way * w) const;
+        bool removeWay(const Way*);
+        bool removeWay(const std::string& osmid);
+        bool containsWay(const Way * w) const;
 
         const std::map<Relation *, std::string> &getRelations() const;
         void setRelations(const std::map<Relation *, std::string> &newRelations);
         bool addRelation(const std::pair<Relation*, std::string> relation);
         bool removeRelation(Relation*);
         bool removeRelation(std::string osmid);
-        bool containsRelation(Relation* r);
+        bool containsRelation(const Relation* r) const;
 
-        virtual void print(std::ostream &stream) override;
-        virtual std::string toXML() override;
+        virtual void print(std::ostream &stream) const override;
+        virtual std::string toXML() const override;
 
     private:
         std::map<Node*, std::string > nodes;

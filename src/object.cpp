@@ -16,6 +16,11 @@ Object::Object()
     setVisible(true);
 }
 
+Object::~Object()
+{
+
+}
+
 std::string Object::getTimestamp() const
 {
     return timestamp;
@@ -36,12 +41,12 @@ void Object::setTags(const std::map<std::string, std::string> &newTags)
     tags = newTags;
 }
 
-void Object::addTag(std::pair<std::string, std::string> newTag)
+void Object::addTag(const std::pair<std::string, std::string> &newTag)
 {
     tags.insert(newTag);
 }
 
-bool Object::checkTag(const std::pair<std::string, std::string> tag) const
+bool Object::checkTag(const std::pair<std::string, std::string> &tag) const
 {
     auto iterator = tags.find(tag.first);
     if(iterator != tags.end())
@@ -50,7 +55,7 @@ bool Object::checkTag(const std::pair<std::string, std::string> tag) const
     return false;
 }
 
-void Object::print(std::ostream &stream)
+void Object::print(std::ostream &stream) const
 {
     stream << id << std::endl;
     stream << user_name << std::endl;
@@ -59,11 +64,11 @@ void Object::print(std::ostream &stream)
     stream << timestamp << std::endl;
     stream << is_visible << std::endl;
     stream << "Tags: "<< std::endl;
-    for(auto t : tags)
+    for(const auto &t : tags)
         stream << "\tKey: " << t.first << ", value: " << t.second << std::endl;
 }
 
-std::string Object::toXML()
+std::string Object::toXML() const
 {
     std::stringstream ss;
     ss.precision(15);
@@ -77,10 +82,11 @@ std::string Object::toXML()
     else
     {
         ss << ">" << std::endl;
-        for(auto tag : tags)
+        for(const auto &tag : tags)
         {
 
-            checkStringContainsSpecialCharacters(tag.second);
+            std::string tagValueCopy = tag.second;
+            checkStringContainsSpecialCharacters(tagValueCopy);
 
             ss << "\t<tag k=\"" << tag.first << "\" v=\"" << tag.second << "\" />" << std::endl;
         }

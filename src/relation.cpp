@@ -65,11 +65,11 @@ bool Relation::removeRelation(std::string osmid)
     return false;
 }
 
-bool Relation::containsRelation(Relation *r)
+bool Relation::containsRelation(const Relation *r) const
 {
-    bool found = relations.find(r) != relations.end();
+    bool found = relations.find(const_cast<Relation*>(r)) != relations.end();
     if(!found)
-        for(auto r_ : relations)
+        for(const auto &r_ : relations)
             if(r_.first != nullptr)
                 r_.first->containsRelation(r);
     return found;
@@ -91,7 +91,7 @@ bool Relation::addNode(const std::pair<Node*, std::string> node)
     return true;
 }
 
-bool Relation::removeNode(Node* node)
+bool Relation::removeNode(const Node *node)
 {
     return removeNode(node->getId());
 }
@@ -109,11 +109,11 @@ bool Relation::removeNode(std::string osmid)
     return false;
 }
 
-bool Relation::containsNode(Node *n) const
+bool Relation::containsNode(const Node *n) const
 {
-    bool found = nodes.find(n) != nodes.end();
+    bool found = nodes.find(const_cast<Node*>(n)) != nodes.end();
     if(!found)
-        for(auto w : ways)
+        for(const auto& w : ways)
             if(w.first != nullptr)
             {
                 found = w.first->containsNode(n);
@@ -121,7 +121,7 @@ bool Relation::containsNode(Node *n) const
                     break;
             }
     if(!found)
-        for(auto r : relations)
+        for(const auto &r : relations)
             if(r.first != nullptr)
             {
                 found = r.first->containsNode(n);
@@ -148,12 +148,12 @@ bool Relation::addWay(const std::pair<Way*, std::string> way)
     return true;
 }
 
-bool Relation::removeWay(Way* relation)
+bool Relation::removeWay(const Way *relation)
 {
     return removeWay(relation->getId());
 }
 
-bool Relation::removeWay(std::string osmid)
+bool Relation::removeWay(const std::string &osmid)
 {
     auto it = std::find_if(ways.begin(), ways.end(),
                            [osmid](std::pair<Way*, std::string> w) { return w.first->getId().compare(osmid) == 0;});
@@ -165,11 +165,11 @@ bool Relation::removeWay(std::string osmid)
     return false;
 }
 
-bool Relation::containsWay(Way *w) const
+bool Relation::containsWay(const Way *w) const
 {
-    bool found = ways.find(w) != ways.end();
+    bool found = ways.find(const_cast<Way*>(w)) != ways.end();
     if(!found)
-        for(auto r : relations)
+        for(const auto& r : relations)
             if(r.first != nullptr){
                 found = r.first->containsWay(w);
                 if(found)
@@ -179,28 +179,28 @@ bool Relation::containsWay(Way *w) const
 }
 
 
-void Relation::print(std::ostream &stream)
+void Relation::print(std::ostream &stream) const
 {
     Object::print(stream);
     stream << "]" << std::endl;
     stream << "Nodes:" << std::endl;
     stream << "[" << std::endl;
-    for(auto n : nodes)
+    for(const auto &n : nodes)
         stream << "\t" << n.first->getId() << std::endl;
     stream << "]" << std::endl;
     stream << "Ways:" << std::endl;
     stream << "[" << std::endl;
-    for(auto w : ways)
+    for(const auto &w : ways)
         stream << "\t" << w.first->getId() << std::endl;
     stream << "]"<< std::endl;
     stream << "Relations:" << std::endl;
     stream << "[" << std::endl;
-    for(auto r : relations)
+    for(const auto &r : relations)
         stream << "\t" << r.first->getId() << std::endl;
     stream << "]"<< std::endl;
 }
 
-std::string Relation::toXML()
+std::string Relation::toXML() const
 {
     std::stringstream ss;
     ss << "<relation id=\"" << id << "\" visible=\"";
@@ -209,18 +209,19 @@ std::string Relation::toXML()
     ss << "\" version=\"" << version << "\" changeset=\"" <<  changeset << "\" timestamp=\"" << timestamp;
     ss << "\" user=\"" << user_name << "\" uid=\"" << user_id << "\">" << std::endl;
 
-    for(auto node : nodes)
+    for(const auto &node : nodes)
         if(node.first != nullptr)
             ss << "\t<member type=\"node\" ref=\"" << node.first->getId() << "\" role=\"" << node.second << "\" />" << std::endl;
-    for(auto way : ways)
+    for(const auto &way : ways)
         if(way.first != nullptr)
             ss << "\t<member type=\"way\" ref=\"" << way.first->getId() << "\" role=\"" << way.second << "\" />" << std::endl;
-    for(auto relation : relations)
+    for(const auto &relation : relations)
         if(relation.first != nullptr)
             ss << "\t<member type=\"relation\" ref=\"" << relation.first->getId() << "\" role=\"" << relation.second << "\" />" << std::endl;
-    for(auto tag : tags)
+    for(const auto &tag : tags)
     {
-        checkStringContainsSpecialCharacters(tag.second);
+        std::string tagValueCopy = tag.second;
+        checkStringContainsSpecialCharacters(tagValueCopy);
         ss << "\t<tag k=\"" << tag.first << "\" v=\"" << tag.second << "\" />" << std::endl;
     }
     ss << "</relation>" << std::endl;

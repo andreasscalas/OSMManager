@@ -16,14 +16,14 @@ CoordsConverter::CoordsConverter(unsigned int epsg_utm)
     /* engine" used by PROJ to determine the best transformation(s) between */
     /* two CRS. */
     std::string epsg_from = "EPSG:" + std::to_string(epsg_utm);
-    P1 = proj_create_crs_to_crs(0,
+    P1 = proj_create_crs_to_crs(nullptr,
                                epsg_from.c_str(),
                                "EPSG:4326",
-                               NULL);
-    P2 = proj_create_crs_to_crs(0,
+                               nullptr);
+    P2 = proj_create_crs_to_crs(nullptr,
                                "EPSG:4326",
                                epsg_from.c_str(),
-                               NULL);
+                               nullptr);
 
 
 

@@ -10,6 +10,7 @@ namespace OpenStreetMap
     {
     public:
         Object();
+        virtual ~Object();
         std::string getId() const;
         void setId(const std::string &value);
 
@@ -31,13 +32,13 @@ namespace OpenStreetMap
         std::string getTimestamp() const;
         void setTimestamp(const std::string &value);
 
-        virtual void print(std::ostream &stream);
-        virtual std::string toXML();
+        virtual void print(std::ostream &stream) const;
+        virtual std::string toXML() const;
 
         const std::map<std::string, std::string> &getTags() const;
         void setTags(const std::map<std::string, std::string> &newTags);
-        void addTag(std::pair<std::string, std::string> newTag);
-        bool checkTag(const std::pair<std::string, std::string> tag) const;
+        void addTag(const std::pair<std::string, std::string> &newTag);
+        bool checkTag(const std::pair<std::string, std::string> &tag) const;
 
     protected:
         std::string id;

@@ -27,23 +27,23 @@ void Node::setCoordinates(double x, double y)
     coordinates->y = y;
 }
 
-void Node::setCoordinates(Point newCoordinates)
+void Node::setCoordinates(const Point& newCoordinates)
 {
     *coordinates = newCoordinates;
 }
 
-void Node::setCoordinates(Point *newCoordinates)
+void Node::setCoordinates(const Point *newCoordinates)
 {
     *coordinates = *newCoordinates;
 }
 
-void Node::print(std::ostream &stream)
+void Node::print(std::ostream &stream) const
 {
     Object::print(stream);
     stream << "(" << coordinates->x << "," << coordinates->y << ")" << std::endl;
 }
 
-std::string Node::toXML()
+std::string Node::toXML() const
 {
     std::stringstream ss;
     ss.precision(15);

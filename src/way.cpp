@@ -58,9 +58,9 @@ bool Way::fixRepeatedNodes()
     return fixed;
 }
 
-bool Way::removeNode(std::string id)
+bool Way::removeNode(const std::string& rid)
 {
-    auto it = std::find_if(nodes.begin(), nodes.end(), [id](Node* n){ return n->getId().compare(id) == 0; });
+    auto it = std::find_if(nodes.begin(), nodes.end(), [rid](Node* n){ return n->getId().compare(rid) == 0; });
     if(it != nodes.end())
     {
         nodes.erase(it);
@@ -69,7 +69,7 @@ bool Way::removeNode(std::string id)
     return false;
 }
 
-void Way::print(std::ostream &stream)
+void Way::print(std::ostream &stream) const
 {
 
     Object::print(stream);
@@ -80,7 +80,7 @@ void Way::print(std::ostream &stream)
     stream << "]" << std::endl;
 }
 
-std::string Way::toXML()
+std::string Way::toXML() const
 {
     std::stringstream ss;
     ss << "<way id=\"" << id << "\" visible=\"";

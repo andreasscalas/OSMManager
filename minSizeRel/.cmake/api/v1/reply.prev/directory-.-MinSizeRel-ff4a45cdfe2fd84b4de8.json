@@ -1,0 +1,110 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 42,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 43,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 46,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 57,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "include/OSMManager-1.0",
+			"paths" : 
+			[
+				"include/root.h",
+				"include/node.h",
+				"include/way.h",
+				"include/relation.h",
+				"include/coordinatesconverter.h",
+				"include/utils.h",
+				"include/types.h",
+				"include/tinyxml2.h",
+				"include/object.h"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "lib/OSMManager-1.0",
+			"paths" : 
+			[
+				"libOSMManager.a"
+			],
+			"targetId" : "OSMManager::@6890427a1f51a3e7e1df",
+			"targetIndex" : 0,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib/OSMManager-1.0",
+			"exportName" : "OSMManager-targets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "OSMManager::@6890427a1f51a3e7e1df",
+					"index" : 0
+				}
+			],
+			"paths" : 
+			[
+				"CMakeFiles/Export/lib/OSMManager-1.0/OSMManager-targets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "lib/OSMManager-1.0",
+			"paths" : 
+			[
+				"minSizeRel/pkg/osmmanager-config.cmake",
+				"minSizeRel/pkg/osmmanager-config-version.cmake"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	}
+}

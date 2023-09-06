@@ -18,31 +18,31 @@ namespace OpenStreetMap
          * @param filename the filename (path + actual name) of the file
          * @return error code, equals 0 if no error is detected.
          */
-        int load(std::string filename);
-        int save(std::string filename);
+        int load(const std::string& filename);
+        int save(const std::string& filename);
 
         const std::map<std::string, Node *> &getNodes() const;
-        const std::vector<Node *> getNodes(std::string key, std::string value = "") const;
-        Node* getNode(std::string);
+        const std::vector<Node *> getNodes(const std::string &key, const std::string &value = "") const;
+        Node* getNode(const std::string&) const;
         void addNode(Node *);
-        std::map<std::string, Node*>::iterator removeNode(std::string id);
+        std::map<std::string, Node*>::iterator removeNode(const std::string &id);
 
         const std::map<std::string, Way *> &getWays() const;
-        std::vector<Way *> getWays(Node*) const;
-        Way* getWay(std::string);
+        std::vector<Way *> getWays(const Node*) const;
+        Way* getWay(const std::string&) const;
         void addWay(Way *);
-        std::map<std::string, Way*>::iterator removeWay(std::string id);
-        std::vector<Way *> getWays(std::string key, std::string value = "") const;
+        std::map<std::string, Way*>::iterator removeWay(const std::string &id);
+        std::vector<Way *> getWays(const std::string &key, const std::string &value = "") const;
 
         const std::map<std::string, Relation *> &getRelations() const;
-        std::vector<Relation *> getRelations(Node *n) const;
-        std::vector<Relation *> getRelations(Way *w) const;
-        std::vector<Relation *> getRelations(Relation *r) const;
-        std::vector<Relation *> getRelations(std::string key, std::string value = "") const;
-        Relation* getRelation(std::string);
+        std::vector<Relation *> getRelations(const Node *n) const;
+        std::vector<Relation *> getRelations(const Way *w) const;
+        std::vector<Relation *> getRelations(const Relation *r) const;
+        std::vector<Relation *> getRelations(const std::string& key, const std::string& value = "") const;
+        Relation* getRelation(const std::string&) const;
 
         void addRelation(Relation *);
-        std::map<std::string, Relation*>::iterator removeRelation(std::string);
+        std::map<std::string, Relation*>::iterator removeRelation(const std::string&);
 
         const std::string &getVersion() const;
 

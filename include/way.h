@@ -12,16 +12,16 @@ namespace OpenStreetMap
     {
     public:
         Way();
-        virtual ~Way();
-        bool removeNode(std::string id);
+        virtual ~Way() override ;
+        bool removeNode(const std::string& id);
         const std::vector<Node *> &getNodes() const;
         void setNodes(const std::vector<Node *> &newNodes);
         void addNode(Node *);
         bool containsNode(const Node*) const;
         bool fixRepeatedNodes();
 
-        virtual void print(std::ostream &stream) override;
-        virtual std::string toXML() override;
+        virtual void print(std::ostream &stream) const override;
+        virtual std::string toXML() const override;
 
     private:
         std::vector<Node*> nodes;

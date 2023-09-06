@@ -1,0 +1,8 @@
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/OSMManager.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/OSMManager_Test.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/edit_cache.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/rebuild_cache.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/list_install_components.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/install.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/install/local.dir
+/home/andreas/Documenti/Progetti/OSMManager/minSizeRel/CMakeFiles/install/strip.dir

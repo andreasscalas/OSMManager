@@ -16,11 +16,11 @@ namespace OpenStreetMap
 
         Point *getCoordinates() const;
         void setCoordinates(double x, double y);
-        void setCoordinates(Point newCoordinates);
-        void setCoordinates(Point *newCoordinates);
+        void setCoordinates(const Point& newCoordinates);
+        void setCoordinates(const Point* newCoordinates);
 
-        virtual void print(std::ostream &stream) override;
-        virtual std::string toXML() override;
+        virtual void print(std::ostream &stream) const override;
+        virtual std::string toXML() const override;
 
     private:
         Point* coordinates;

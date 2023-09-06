@@ -22,7 +22,7 @@ Root::~Root()
     relations.clear();
 }
 
-int Root::load(std::string filename)
+int Root::load(const std::string &filename)
 {
     if(filename.compare("") == 0)
         return 1;
@@ -406,7 +406,7 @@ int Root::load(std::string filename)
     return 0;
 }
 
-int Root::save(std::string filename)
+int Root::save(const std::string &filename)
 {
     std::ofstream ofs(filename);
     if(ofs.is_open())
@@ -431,7 +431,7 @@ const std::map<std::string, OpenStreetMap::Node *> &Root::getNodes() const
     return nodes;
 }
 
-const std::vector<Node *> Root::getNodes(std::string key, std::string value) const
+const std::vector<Node *> Root::getNodes(const std::string &key, const std::string &value) const
 {
     std::vector<Node *> retList;
 
@@ -444,7 +444,7 @@ const std::vector<Node *> Root::getNodes(std::string key, std::string value) con
     return retList;
 }
 
-Node *Root::getNode(std::string s)
+Node *Root::getNode(const std::string &s) const
 {
     auto it = nodes.find(s);
     if(it != nodes.end())
@@ -458,7 +458,7 @@ void Root::addNode(Node *n)
     nodes.insert(std::make_pair(n->getId(), n));
 }
 
-std::map<std::string, Node*>::iterator Root::removeNode(std::string id)
+std::map<std::string, Node*>::iterator Root::removeNode(const std::string &id)
 {
     auto it = nodes.find(id);
     if(it != nodes.end())
@@ -481,7 +481,7 @@ const std::map<std::string, OpenStreetMap::Way *> &Root::getWays() const
     return ways;
 }
 
-std::vector<Way *> Root::getWays(Node *n) const
+std::vector<Way *> Root::getWays(const Node *n) const
 {
     std::vector<Way *> retList;
 
@@ -495,7 +495,7 @@ std::vector<Way *> Root::getWays(Node *n) const
     return retList;
 }
 
-Way *Root::getWay(std::string s)
+Way *Root::getWay(const std::string &s) const
 {
     auto it = ways.find(s);
     if(it != ways.end())
@@ -510,7 +510,7 @@ void Root::addWay(Way *w)
 }
 
 
-std::map<std::string, Way*>::iterator Root::removeWay(std::string id)
+std::map<std::string, Way*>::iterator Root::removeWay(const std::string &id)
 {
     auto it = ways.find(id);
     if(it != ways.end())
@@ -525,7 +525,7 @@ std::map<std::string, Way*>::iterator Root::removeWay(std::string id)
         return ways.end();
 }
 
-std::vector<Way *> Root::getWays(std::string key, std::string value) const
+std::vector<Way *> Root::getWays(const std::string &key, const std::string &value) const
 {
     std::vector<Way *> retList;
 
@@ -543,7 +543,7 @@ const std::map<std::string, OpenStreetMap::Relation *> &Root::getRelations() con
     return relations;
 }
 
-std::vector<Relation *> Root::getRelations(Node *n) const
+std::vector<Relation *> Root::getRelations(const Node *n) const
 {
     std::vector<Relation *> retList;
 
@@ -554,7 +554,7 @@ std::vector<Relation *> Root::getRelations(Node *n) const
     return retList;
 }
 
-std::vector<Relation *> Root::getRelations(Way *w) const
+std::vector<Relation *> Root::getRelations(const Way *w) const
 {
     std::vector<Relation *> retList;
 
@@ -565,7 +565,7 @@ std::vector<Relation *> Root::getRelations(Way *w) const
     return retList;
 }
 
-std::vector<Relation *> Root::getRelations(Relation *relation) const
+std::vector<Relation *> Root::getRelations(const Relation *relation) const
 {
     std::vector<Relation *> retList;
 
@@ -576,7 +576,7 @@ std::vector<Relation *> Root::getRelations(Relation *relation) const
     return retList;
 }
 
-std::vector<Relation *> Root::getRelations(std::string key, std::string value) const
+std::vector<Relation *> Root::getRelations(const std::string &key, const std::string &value) const
 {
     std::vector<Relation *> retList;
 
@@ -589,7 +589,7 @@ std::vector<Relation *> Root::getRelations(std::string key, std::string value) c
     return retList;
 }
 
-Relation *Root::getRelation(std::string s)
+Relation *Root::getRelation(const std::string &s) const
 {
     auto it = relations.find(s);
     if(it != relations.end())
@@ -603,7 +603,7 @@ void Root::addRelation(Relation *r)
     relations.insert(std::make_pair(r->getId(), r));
 }
 
-std::map<std::string, Relation*>::iterator Root::removeRelation(std::string id)
+std::map<std::string, Relation*>::iterator Root::removeRelation(const std::string &id)
 {
     auto it = relations.find(id);
     if(it != relations.end())
